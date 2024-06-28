@@ -27,12 +27,11 @@ def index():
 class Restaurants(Resource):
     def get(self):
         restaurants = [n.to_dict() for n in Restaurant.query.all()]
-
-        for hero in restaurants:
-            hero.pop('restaurant_pizzas', None)
+        
+        for restaurant in restaurants:
+            restaurant.pop('restaurant_pizzas', None)
         return make_response(restaurants, 200)
 
-api.add_resource(Restaurants, "/restaurants")
 
 class RestaurantByID(Resource):
     def get(self, id):
@@ -51,7 +50,6 @@ class RestaurantByID(Resource):
         db.session.commit()
         return {}, 204
 
-api.add_resource(RestaurantByID, "/restaurants/<int:id>")
 
 class Pizzas(Resource):
     def get(self):
@@ -63,8 +61,7 @@ class Pizzas(Resource):
         )
 
         return response
-    
-api.add_resource(Pizzas, "/pizzas")
+
 
 class RestaurantPizzas(Resource):
     def post(self):
@@ -87,7 +84,12 @@ class RestaurantPizzas(Resource):
             return {"errors": ["validation errors"]}, 400
 
 
+
+api.add_resource(Restaurants, "/restaurants")
+api.add_resource(RestaurantByID, "/restaurants/<int:id>")
+api.add_resource(Pizzas, "/pizzas")
 api.add_resource(RestaurantPizzas, "/restaurant_pizzas")
+
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
